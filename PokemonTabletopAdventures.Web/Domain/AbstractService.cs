@@ -12,7 +12,7 @@ namespace PokemonTabletopAdventures.Web.Domain
         public AbstractService(IConfiguration configuration, string route)
         {
             var rootUrl = configuration.GetValue<string>(Routes.ApiRootUrl);
-            if (rootUrl == null)
+            if (rootUrl != null)
             {
                 var rootUri = new Uri(rootUrl);
                 var uri = new Uri(rootUri, route);
