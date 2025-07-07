@@ -1,0 +1,59 @@
+﻿@page "/"
+@using PokemonTabletopAdventures.Web.Domain;
+@using PokemonTabletopAdventures.Models.Indicies;
+
+@inject IIndexService service
+
+<PageTitle>Home</PageTitle>
+
+<h1>This is a test</h1>
+
+<div class="input-group">
+    <span class="input-group-text">Offset</span>
+    <input class="form-control" type="number" @bind-value="offset" />
+</div>
+
+<div class="input-group">
+    <span class="input-group-text">Limit</span>
+    <input class="form-control" type="number" @bind-value="limit" />
+</div>
+
+@if (service.IsReady)
+{
+    <button class="btn btn-primary" @onclick="SendAsync">Search</button>
+
+    @if (_isRunnnig)
+    {
+        <div>Magic is happening</div>
+    }
+    else if (_response?.IsSuccessful == true)
+    {
+        <div>@_response.Content</div>
+        foreach (var result in _response.Data!.Results)
+        {
+            <div>@result</div>
+        }
+    }
+    else if (_response?.IsSuccessful == false)
+    {
+        <div>@_response.Content</div>
+    }
+}
+else
+{
+    <div>API has not ben deployed yet</div>
+}
+
+@code{
+    int offset, limit;
+    string _input = string.Empty;
+    bool _isRunnnig = false;
+    Response<IndexCollectionResponse>? _response;
+
+    private async Task SendAsync()
+    {
+        _isRunnnig = true;
+        _response = await service.GetPokemonFormsAsync(offset, limit);
+        _isRunnnig = false;
+    }
+}
